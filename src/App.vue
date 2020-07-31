@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <div class="test-itm">
+    <div class="test-item">
       <button @click="alert">Dialog-Alert</button>
     </div>
-    <div class="test-itm">
+    <div class="test-item">
       <button @click="confirm">Dialog-confirm</button>
     </div>
-    <div class="test-itm">
+    <div class="test-item">
       <button @click="dialogVnode">Dialog-dialog-vnode</button>
     </div>
-    <div class="test-itm">
+    <div class="test-item">
       <button @click="dialogJsx">Dialog-dialog-jsx</button>
     </div>
-    <div class="test-itm">
+    <div class="test-item">
       <button @click="choose">Dialog-choose</button>
     </div>
   </div>
@@ -36,8 +36,9 @@ export default {
         title: 'title',
         content: <div>HelloWorld</div>,
         btnText: 'OK',
-        onOk: () => {
-          return true;
+        onOk: async () => {
+          await this.$ajax();
+          return true
         },
       });
     },
@@ -109,6 +110,13 @@ export default {
         placement: 'right',
       });
     },
+    $ajax(){
+      return new Promise(resolve=>{
+        setTimeout(()=>{
+          resolve()
+        }, 2000)
+      })
+    }
   },
 };
 </script>
@@ -122,4 +130,14 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+.test-item{
+  width: 100%;
+  margin: 12px 0;
+}
+.test-item button{
+  padding: 12px;
+  width: 100%;
+}
+
+
 </style>
