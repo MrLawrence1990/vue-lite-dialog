@@ -64,9 +64,10 @@ export default {
      *  title: string,
         content: string | VNode,
         btnCancelText: string,
-        btnOkText: tstring,
+        btnOkText: string,
         onOk: function,
         onCancel:function,
+        extClass: String,
         type:['confirm','alert','dialog'] default 'dialog',
         placement: top left bottom right, // default bottom
         noPadding: boolean, //default false

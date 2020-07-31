@@ -8,6 +8,20 @@ npm install vue-lite-dialog --save
 
 ### Usage
 ```javascript
+/* {
+  *  title: string, // 标题
+    content: string | VNode, // 弹窗内容
+    btnCancelText: string, // 取消按钮文案
+    btnOkText: string, // 确认按钮文案
+    onOk: function, // 确认回调
+    onCancel:function, // 取消回调
+    extClass: String, // 扩展className
+    type:['confirm','alert','dialog'] default 'dialog', // 弹窗类型
+    placement: top left bottom right, // default bottom //  弹出位置
+    noPadding: boolean, //default false
+  * }
+  */
+
 // Alert
 this.$Alert({
   title: 'title',
@@ -18,7 +32,9 @@ this.$Alert({
     return true
   },
 })
+```
 
+```javascript
 // Confirm
 this.$Confirm({
   title: '确认',
