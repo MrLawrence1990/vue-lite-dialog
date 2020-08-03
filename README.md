@@ -6,7 +6,16 @@
 npm install vue-lite-dialog --save
 ```
 
+## import & register
+```javascript
+import Dialog from 'vue-lite-dialog'
+import 'vue-lite-dialog/dist/vue-dialog.css'
+
+Vue.use(Dialog)
+```
+
 ### Usage
+
 ```javascript
 /* {
   *  title: string, // 标题
@@ -21,6 +30,7 @@ npm install vue-lite-dialog --save
     noPadding: boolean, //default false
   * }
   */
+ 
 
 // Alert
 this.$Alert({

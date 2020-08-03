@@ -1,6 +1,8 @@
 {
   "name": "vue-lite-dialog",
-  "version": "1.0.2",
+  "version": "1.1.2",
+  "description": "支持JSX和VNode的轻量级Vue弹窗组件",
+  "keywords": ["vue", "dialog", "lite-dialog"],
   "main": "dist/vue-dialog.common.js",
   "scripts": {
     "serve": "vue-cli-service serve",
