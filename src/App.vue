@@ -15,6 +15,14 @@
     <div class="test-item">
       <button @click="choose">Dialog-choose</button>
     </div>
+    <div class="test-item">
+      <button @click="testDoublePop">测试连续弹出</button>
+    </div>
+    <div class="test-item">
+    </div>
+    <div class="test-item">
+      <button @click="testRFDialog">testRFDialog</button>
+    </div>
   </div>
 </template>
 
@@ -38,7 +46,7 @@ export default {
         btnText: 'OK',
         onOk: async () => {
           await this.$ajax();
-          return true
+          return true;
         },
       });
     },
@@ -106,16 +114,75 @@ export default {
       this.$Choose({
         title: 'Data',
         height: '60%',
-        list: [],
+        list: [{}],
         placement: 'right',
       });
     },
-    $ajax(){
-      return new Promise(resolve=>{
-        setTimeout(()=>{
-          resolve()
-        }, 2000)
-      })
+    $ajax() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 2000);
+      });
+    },
+    testDoublePop() {
+      let a = this.$Confirm({
+        title: '弹窗1',
+        content: '弹窗1content',
+        btnOkText: '确认',
+        btnCancelText: '取消',
+        onOk: async () => {
+          window.alert('OK');
+          return true;
+        },
+      });
+      setTimeout(() => {
+        a.close()
+        this.$Confirm({
+        title: '弹窗2',
+        content: '弹窗2content',
+          btnOkText: '确认',
+          btnCancelText: '取消',
+          onOk: async () => {
+            window.alert('OK');
+            return true;
+          },
+        });
+      },2000);
+    },
+    testRFDialog(){
+      this.$RFDialog({
+        title: 'title',
+        leftAction: {
+          content: <span>left</span>,
+          type: 'close',
+          handler(){
+            alert(1)
+          }
+        },
+        rightAction: {
+          content: <span>right</span>,
+          type: 'forward',
+          handler(){
+            alert(1)
+          }
+        },
+        containerType: 'max',
+        destroy: true,
+        isShowShadow: true,
+        // placement: 'right',
+        content: (()=>{
+          return (<ul>
+            {(()=>{
+              let list = []
+              for(let i=0;i<50;i++){
+                list.push(<li>{i}</li>)
+              }
+              return list
+            })()}
+          </ul>)
+        })(),
+      });
     }
   },
 };
@@ -130,14 +197,12 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.test-item{
+.test-item {
   width: 100%;
   margin: 12px 0;
 }
-.test-item button{
+.test-item button {
   padding: 12px;
   width: 100%;
 }
-
-
 </style>

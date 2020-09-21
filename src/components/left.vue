@@ -1,0 +1,3 @@
+<template>
+  <svg xmlns="http://www.w3.org/2000/svg" overflow="hidden" viewBox="0 0 32 32" style="width:1em;height:1em;vertical-align:middle"><path fill-rule="evenodd" d="M24.711 3.151L12.167 16 24.71 28.85a1.027 1.027 0 0 1 0 1.427l-1.394 1.428a.97.97 0 0 1-1.393 0L8.684 18.142h-.002L7.29 16.713a1.025 1.025 0 0 1 0-1.428l1.393-1.427L21.924.295a.97.97 0 0 1 1.393 0l1.394 1.428a1.028 1.028 0 0 1 0 1.428z"/></svg>
+</template>

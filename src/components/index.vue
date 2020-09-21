@@ -10,17 +10,36 @@
       :class="
         `bottom-wrap-content-box ${wrapOptions.placement || 'bottom'} ${
           ban_animation ? '' : 'wrap-animation'
-        } ${bottomWrapShow ? 'bottom-wrap-show' : ''}`
+        } ${bottomWrapShow ? 'bottom-wrap-show' : ''} ${wrapOptions.type === 'rf-dialog' ? 'dialog-radius' : ''}`
       "
     >
       <div
-        v-if="wrapOptions.title"
+        v-if="wrapOptions.title && wrapOptions.type !== 'rf-dialog'"
         class="bottom-wrap-close"
         :style="titleStyle"
       >
         <span class="title">{{ wrapOptions.title }}</span>
         <div class="dialog-ic-close" @click="close" v-if="!wrapOptions.disableClose">
           <Close style="float: right"/>
+        </div>
+      </div>
+      <div class="rf-floating-header" v-if="wrapOptions.type === 'rf-dialog'">
+        <div class="left-action" v-if="wrapOptions.leftAction && wrapOptions.leftAction.content" @click="()=>{wrapOptions.leftAction.type === 'close'?close() : wrapOptions.leftAction.handler && wrapOptions.leftAction.handler()}">
+          <Left v-if="wrapOptions.leftAction.type === 'back'" />
+          <Right v-else-if="wrapOptions.leftAction.type === 'forward'" />
+          <Close v-else-if="wrapOptions.leftAction.type === 'close'" />
+          <slot name="leftActionContent" v-else-if="$slots.leftActionContent"></slot>
+          <span v-else-if="typeof wrapOptions.leftAction.content === 'string'"></span>
+        </div>
+        <div class="rf-header-title">
+          {{ wrapOptions.title }}
+        </div>
+        <div class="right-action" v-if="wrapOptions.rightAction && wrapOptions.rightAction.content" @click="()=>{wrapOptions.rightAction.type === 'close'?close() : wrapOptions.rightAction.handler && wrapOptions.rightAction.handler()}">
+          <Left v-if="wrapOptions.rightAction.type === 'back'" />
+          <Right v-else-if="wrapOptions.rightAction.type === 'forward'" />
+          <Close v-else-if="wrapOptions.rightAction.type === 'close'" />
+          <slot name="rightActionContent" v-else-if="$slots.rightActionContent"></slot>
+          <span v-else-if="typeof wrapOptions.rightAction.content === 'string'"></span>
         </div>
       </div>
       <div class="bottom-wrap-desc" v-if="wrapOptions.desc">
@@ -30,6 +49,7 @@
         class="bottom-wrap-content"
         :class="{ 'no-padding': wrapOptions.noPadding }"
       >
+        <div class="wt-shade" v-if="wrapOptions.isShowShadow"></div>
         <slot name="content" v-if="$slots.content"></slot>
         <div
           v-if="wrapOptions.content && typeof wrapOptions.content === 'string'"
@@ -64,16 +84,26 @@
 </template>
 <script>
 import Close from './close'
+import Left from './left'
+import Right from './right'
 
 export default {
   name: 'vue-dialog',
   components: {
-    Close
+    Close,
+    Left,
+    Right
   },
   data() {
     return {
       wrapOptions: {
         content: '',
+        leftAction: {
+          content: ''
+        },
+        rightAction: {
+          content: ''
+        }
       },
       bottomWrapShow: false,
       mask: false,
@@ -95,6 +125,20 @@ export default {
         this.$slots.content = '';
       }
     },
+    'wrapOptions.leftAction.content': function(val) {
+      if (typeof val === 'object') {
+        this.$slots.leftActionContent = val;
+      } else {
+        this.$slots.leftActionContent = '';
+      }
+    },
+    'wrapOptions.rightAction.content': function(val) {
+      if (typeof val === 'object') {
+        this.$slots.rightActionContent = val;
+      } else {
+        this.$slots.rightActionContent = '';
+      }
+    }
   },
   computed: {
     contentBoxStyle() {
@@ -134,8 +178,15 @@ export default {
       }
     },
     show(options) {
-      if (this.bottomWrapShow) {
+      if (this.bottomWrapShow || this.timer1) {
         // 如果在已有弹窗的基础上再次弹窗，先关闭原有弹窗
+        if(this.timer1){
+          try{
+            clearTimeout(this.timer1)
+          }catch(e){
+            console.error(e)
+          }
+        }
         this.view(null, this.showWrap.bind(this, options));
       } else {
         this.showWrap(options);
@@ -163,6 +214,7 @@ export default {
     },
     close() {
       this.timer1 = setTimeout(() => {
+        this.timer1 = null
         this.view();
         if (this.wrapOptions.destroy) {
           this.wrapOptions.content = null;
@@ -171,6 +223,11 @@ export default {
           this.wrapOptions.onCancel.bind(this)();
         }
       }, 10);
+    },
+    clean() {
+      this.bottomWrapShow = false
+      this.mask = false
+      this.wrapOptions.content = null
     },
     updateTheme(theme){
       this.theme = theme
@@ -225,15 +282,26 @@ export default {
     width: 100%;
     z-index: 450;
     line-height: 1.5;
+    &.dialog-radius{
+      border-radius: 12px 12px 0 0;
+    }
     .bottom-wrap-content {
       flex: 1;
       display: flex;
+      position: relative;
       flex-direction: column;
       overflow: auto;
       padding: 0 20px;
       padding-top: 0;
       font-size: 14px;
       -webkit-overflow-scrolling: touch;
+      & .wt-shade{
+        position: fixed;
+        top: 90px;
+        height: 60px;
+        width: 100%;
+        background: linear-gradient(rgba(255, 255, 255, 1),rgba(255, 255, 255, 0));
+      }
     }
     .bottom-wrap-content.no-padding {
       padding: 0 !important;
@@ -275,6 +343,20 @@ export default {
       float: right;
       width: 32px;
       height: 32px;
+    }
+  }
+  .rf-floating-header{
+    display: flex;
+    font-size: 28px;
+    line-height: 32px;
+    padding: 30px 20px;
+    align-items: center;
+    .rf-header-title{
+      flex: 4;
+      text-align: center;
+    }
+    .left-action,.right-action{
+      flex: none;
     }
   }
   .bottom-wrap-btn {

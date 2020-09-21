@@ -98,6 +98,7 @@ export default {
 .d-common-dialog.common-choice .chose-item {
   padding: 2px 0;
   display: flex;
+  align-items: center;
 }
 .d-common-dialog.common-choice .chose-name {
   flex: 4;

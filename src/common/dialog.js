@@ -34,10 +34,10 @@ const DialogAnimation = (() => {
   }
 })()
 
+var $dialog
+
 export default {
   install: function (Vue) {
-    var $dialog
-
     // , timer1, timer2
     Vue.prototype.$Confirm = function (props) {
       return this.$Dialog.bind(this)(
@@ -96,12 +96,31 @@ export default {
         height: options.height || '100%',
         title: options.title,
         disableClose: options.disableClose,
-        content: this.$createElement(Choice, { props: {...options, color: DialogAnimation.getTheme().themeColor} }),
+        placement: options.placement || 'bottom',
+        content: this.$createElement(Choice, { props: { ...options, color: DialogAnimation.getTheme().themeColor } }),
         desc: options.desc
       });
+    }
+    Vue.prototype.$RFDialog = function (props) {
+      return this.$Dialog.bind(this)(
+        Object.assign(props, {
+          type: 'rf-dialog',
+          height: props.containerType === 'max' ? 'calc(100% - 20px)': 'auto',
+          disableClose: true,
+          noPadding: true,
+          isShowShadow: props.isShowShadow,
+          placement: props.placement || 'bottom'
+        }))
     }
   },
   setTheme (color, text_color) {
     DialogAnimation.setColor(color, text_color)
+  },
+  clean () {
+    try {
+      $dialog && $dialog.clean()
+    } catch (e) {
+      console.error(e)
+    }
   }
 }
